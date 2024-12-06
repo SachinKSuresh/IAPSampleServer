@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.synchronoss.IAPServer.products.dtos.BatchProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,24 @@ public class ProductServiceImpl implements ProductService {
 //        Product product = productConverter.convertToEntity(productDto);
 		return productRepository.save(product);
 	}
+
+	@Override
+	public List<ProductDto> batchProductCreation(List<BatchProduct> batchProducts) {
+		List<ProductDto> productDtos = new ArrayList<>();
+		for(BatchProduct batchProduct : batchProducts ){
+			Product product = batchProduct.getProduct();
+			product = createProduct(product);
+			long id = product.getId();
+			List<Discount> discounts = batchProduct.getDiscountList();
+			discounts.forEach(discount -> discount.setProductId(id));
+			List<DiscountDto> discountList = discountRepository.saveAll(discounts).stream().map(discountConverter::convertToDto).toList();
+			ProductDto pdto = productConverter.convertToDto(product);
+			pdto.setDiscounts(discountList);
+			productDtos.add(pdto);
+		}
+		return productDtos;
+	}
+
 
 	@Override
 	public List<ProductDto> getEligibleProducts() {

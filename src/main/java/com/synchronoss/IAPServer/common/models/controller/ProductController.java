@@ -1,7 +1,9 @@
 package com.synchronoss.IAPServer.common.models.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.synchronoss.IAPServer.products.dtos.BatchProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +58,25 @@ public class ProductController {
     	
     	return ResponseEntity.ok(discountService.createDiscount(discount));
     	
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<Void> batchCreateProducts(@RequestBody List<ProductDto> productDtos){
+        productService.batchProductCreation(createBatchProductEntity(productDtos));
+    	return ResponseEntity.ok(null);
+    }
+
+    private List<BatchProduct> createBatchProductEntity(List<ProductDto> productDtos){
+        List<BatchProduct> batchProducts = new ArrayList<>();
+        for(ProductDto productDto : productDtos){
+            List<Discount> discounts = productDto.getDiscounts().stream().map(di->discountConverter.convertToEntity(di)).toList();
+            Product product = productConverter.convertToEntity(productDto);
+            BatchProduct batchProduct = new BatchProduct();
+            batchProduct.setProduct(product);
+            batchProduct.setDiscountList(discounts);
+            batchProducts.add(batchProduct);
+        }
+        return batchProducts;
     }
 
 }

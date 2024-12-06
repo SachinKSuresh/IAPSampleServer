@@ -28,7 +28,7 @@ public class DiscountConverter {
         discountDto.setPriceFormatted(discount.getPriceFormatted());
         discountDto.setRecurringSubscriptionPeriod(discount.getRecurringSubscriptionPeriod());
         discountDto.setType(discount.getType());
-        discountDto.setProductId(discount.getProductId());
+//        discountDto.setProductId(discount.getProductId());
         return discountDto;
     }
 }
