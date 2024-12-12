@@ -1,4 +1,4 @@
-package com.synchronoss.IAPServer.common.models.controller;
+package com.synchronoss.IAPServer.products;
 
 import java.util.ArrayList;
 import java.util.List;
